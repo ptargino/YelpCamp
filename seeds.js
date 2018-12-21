@@ -1,6 +1,6 @@
 var mongoose = require("mongoose"),
-    Campground = require("./models/campgrounds"),
-    Comment = require("./models/comments");
+    Campground = require("./models/campground"),
+    Comment = require("./models/comment");
 
 var data = [{
         name: "Cloud's Rest",
@@ -32,33 +32,36 @@ function seedDB() {
             }
             console.log("removed comments!");
             //add a few campgrounds
-            data.forEach(function(seed) {
-                Campground.create(seed, function(err, campground) {
-                    if (err) {
-                        console.log(err)
-                    }
-                    else {
-                        console.log("added a campground");
-                        //create a comment
-                        Comment.create({
-                            text: "This place is great, but I wish there was internet",
-                            author: "Homer"
-                        }, function(err, comment) {
-                            if (err) {
-                                console.log(err);
-                            }
-                            else {
-                                campground.comments.push(comment);
-                                campground.save();
-                                console.log("Created new comment");
-                            }
-                        });
-                    }
-                });
-            });
+            data.forEach(seed => addSeed(seed));
         });
+        //add a few comments
+
+    })
+}
+
+var addSeed = (seed) => {
+    Campground.create(seed, function(err, campground) {
+        if (err) {
+            console.log(err)
+        }
+        else {
+            console.log("added a campground");
+            //create a comment
+            Comment.create({
+                text: "This place is great, but I wish there was internet",
+                author: "Homer"
+            }, function(err, comment) {
+                if (err) {
+                    console.log(err);
+                }
+                else {
+                    campground.comments.push(comment);
+                    campground.save();
+                    console.log("Created new comment");
+                }
+            });
+        }
     });
-    //add a few comments
 }
 
 module.exports = seedDB;
